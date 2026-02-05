@@ -20,7 +20,8 @@
 <!-- overlayScrollbars -->
 <script src="{{ asset('admin_lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- AdminLTE App -->
-{{-- <script src="{{ asset('admin_lte/dist/js/adminlte.js') }}"></script> --}}
+<script src="{{ asset('admin_lte/dist/js/adminltev3.min.js') }}"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script> --}}
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('admin_lte/dist/js/pages/dashboard.js') }}"></script>
 <!-- DataTables  & Plugins -->
@@ -40,3 +41,19 @@
 <script src="{{ asset('admin_lte/plugins/select2/js/select2.full.min.js') }}"></script>
 <!-- BS-Stepper -->
 <script src="{{ asset('admin_lte/plugins/bs-stepper/js/bs-stepper.min.js') }}"></script>
+<script>
+  // BS-Stepper Init
+  document.addEventListener('DOMContentLoaded', function () {
+    window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+  })
+</script>
+<script>
+  $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+    })
+</script>

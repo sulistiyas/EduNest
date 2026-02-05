@@ -427,7 +427,7 @@
   var SELECTOR_CONTROL_SIDEBAR = '.control-sidebar';
   var SELECTOR_CONTROL_SIDEBAR_CONTENT$1 = '.control-sidebar-content';
   var SELECTOR_DATA_TOGGLE$4 = '[data-widget="control-sidebar"]';
-  var SELECTOR_HEADER$1 = '.main-header';
+  var SELECTOR_HEADER$1 = '.main  -header';
   var SELECTOR_FOOTER$1 = '.main-footer';
   var CLASS_NAME_CONTROL_SIDEBAR_ANIMATE = 'control-sidebar-animate';
   var CLASS_NAME_CONTROL_SIDEBAR_OPEN$1 = 'control-sidebar-open';
