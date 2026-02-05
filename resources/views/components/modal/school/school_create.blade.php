@@ -19,8 +19,8 @@
                         <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" required>
                     </div>
                     <div class="form-group">
-                        <label for="contact_number">Contact Number</label>
-                        <input type="text" class="form-control" id="contact_number" name="contact_number" placeholder="Enter Contact Number" required>
+                        <label for="phone">Contact Number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Contact Number" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>

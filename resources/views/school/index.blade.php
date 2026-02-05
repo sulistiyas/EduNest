@@ -1,6 +1,11 @@
 @include('components.header')
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+    @include('sweetalert::alert')
     <div class="wrapper">
+        <!-- Preloader -->
+        {{-- <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="{{ asset('admin_lte/dist/img/AdminLTELogo.png') }}" alt="AdminLTELogo" height="60" width="60">
+        </div> --}}
         @include('components.navbar')
         @include('components.sidebar')
         <!--begin::App Main-->
@@ -56,11 +61,15 @@
                                                     <td>{{ $school->email }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary btn-view" data-id="{{ $school->school_id }}" data-toggle="modal" data-target="#modal_school_view">View</button>
-                                                        <a href="{{ route('school.edit', $school->school_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                                        <form action="{{ route('school.destroy', $school->school_id) }}" method="POST" style="display: inline-block;">
+                                                        <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $school->school_id }}" data-toggle="modal" data-target="#modal_school_edit">Edit</button>
+                                                        <form action="{{ route('school.destroy', $school->school_id) }}"
+                                                            method="POST"
+                                                            class="d-inline delete-form">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this school?')">Delete</button>
+                                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                                Delete
+                                                            </button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -78,6 +87,10 @@
                 @include('components.modal.school.school_create')
                 {{-- Show Modal --}}
                 @include('components.modal.school.show')
+                {{-- Edit Modal --}}
+                @if(isset($school))
+                    @include('components.modal.school.edit', ['school' => $school])
+                @endif
                 <!-- /.content -->
             </div>
         <!--end::App Main-->
@@ -113,6 +126,51 @@
                 }
             });
         });
+        // Edit School Modal
+        $('#modal_school_edit').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var schoolId = button.data('id');
+            $.ajax({
+                url: '/school/edit/' + schoolId,
+                method: 'GET',
+                success: function(response) {
+                    console.log(response);
+                    if(response.status) {
+                        $('#update_name').val(response.data.name);
+                        $('#update_address').val(response.data.address);
+                        $('#update_contact_number').val(response.data.phone);
+                        $('#update_email').val(response.data.email);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
     </script>
+    {{-- Custom Alert For delete button --}}
+    <script>
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Are You Sure?',
+                    text: "School Data will be deleted permanently!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>   
