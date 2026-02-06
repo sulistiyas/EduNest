@@ -9,18 +9,18 @@
         @include('components.navbar')
         @include('components.sidebar')
         <!--begin::App Main-->
-        <div class="content-wrapper">
+            <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <div class="content-header">
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Roles</h1>
+                                <h1 class="m-0">Users</h1>
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="{{ route('dash') }}">Home</a></li>
-                                    <li class="breadcrumb-item active"> Roles</li>
+                                    <li class="breadcrumb-item active"> Users</li>
                                 </ol>
                             </div>
                         </div><!-- /.row -->
@@ -34,34 +34,41 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">Roles Information</h3>
-                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_roles">
+                                        <h3 class="card-title">User List</h3>
+                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_users">
                                             <i class="fas fa-plus">&nbsp;Add Data</i>
                                         </button>
                                     </div>
                                     <div class="card-body">
-                                        <table id="tbl_roles" class="table table-bordered table-striped">
+                                        <table id="tbl_school" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     <th style="width: 10px">#</th>
-                                                    <th>Role Name</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>School</th>
+                                                    <th>Role</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($roles as $role)
+                                                @foreach($users_data as $user)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $role->name }}</td>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <td>{{ $user->school_name ?? 'N/A' }}</td>
+                                                    <td>{{ $user->role_name ?? 'N/A' }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm btn-warning" data-id="{{ $role->role_id }}" data-toggle="modal" data-target="#modal_edit_role">
-                                                            <i class="fas fa-edit"></i>&nbsp;Edit
-                                                        </button>
-                                                        <form action="{{ route('roles.destroy', $role->role_id) }}" method="POST" style="display: inline-block;" class="d-inline delete-form">
+                                                        <button class="btn btn-info btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_show">View</button>
+                                                        <button class="btn btn-warning btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_edit">Edit</button>
+                                                        <form action="{{ route('users.destroy', $user->id) }}"
+                                                            method="POST"
+                                                            class="d-inline delete-form">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-danger">
-                                                                <i class="fas fa-trash"></i>&nbsp;Delete
+                                                                Delete
                                                             </button>
                                                         </form>
                                                     </td>
@@ -75,43 +82,83 @@
                         </div>
                     </div>
                 </section>
-                <!-- /.content -->
+                {{-- Modal Section --}}
                 {{-- Create Modal --}}
-                @include('components.modal.role.create')
+                @include('components.modal.users.create')
+                {{-- Show Modal --}}
+                @include('components.modal.users.show')
                 {{-- Edit Modal --}}
-                @if(isset($role))
-                    @include('components.modal.role.edit')
+                @if(isset($user))
+                    @include('components.modal.users.edit')
                 @endif
-        </div>
+                
+                <!-- /.content -->
+            </div>
+        <!--end::App Main-->
         @include('components.footer_body')
     </div>
     @include('components.footer')
     <script>
         // Datatables
         $(function () {
-            $("#tbl_roles").DataTable({
+            $("#tbl_school").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["csv", "excel", "pdf"]
-            }).buttons().container().appendTo('#tbl_roles_wrapper .col-md-6:eq(0)');
+            }).buttons().container().appendTo('#tbl_school_wrapper .col-md-6:eq(0)');
         });
-        // Edit Modal Population
-        $('#modal_edit_role').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var roleId = button.data('id');
-            $.ajax({
-                url: '/roles/edit/' + roleId,
-                method: 'GET',
-                success: function(response) {
-                    console.log(response);
-                    if(response.status) {
-                        $('#update_name').val(response.data.name);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
+    // View School Modal Population
+    $('#modal_users_show').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var userId = button.data('id');
+        // console.log("User ID:", userId);
+        // AJAX request to fetch user details
+        $.ajax({
+            url: '/users/show/' + userId,
+            method: 'GET',
+            success: function(response){
+                console.log(response);
+                if(response.status){
+                    $('#show_name').text(response.data.name);
+                    $('#show_email').text(response.data.email);
+                    $('#show_school').text(response.data.school || 'N/A');
+                    $('#show_role').text(response.data.role || 'N/A');
                 }
-            });
+            },
+            error: function(xhr, status, error){
+                console.log(error);
+            }
         });
+    });
+    // Edit User Modal Population
+    $('#modal_users_edit').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget);
+        let userId = button.data('id');
+
+        $.ajax({
+            url: '/users/edit/' + userId,
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.status) {
+                    $('#update_name').val(response.data.name);
+                    $('#update_email').val(response.data.email);
+
+                    // KUNCI UTAMA 🔥
+                    $('#update_role_id')
+                        .val(response.data.role_id)
+                        .trigger('change');
+
+                    $('#update_school_id')
+                        .val(response.data.school_id)
+                        .trigger('change');
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
     </script>
     {{-- Custom Alert For delete button --}}
     <script>
@@ -121,7 +168,7 @@
 
                 Swal.fire({
                     title: 'Are You Sure?',
-                    text: "Role Data will be deleted permanently!",
+                    text: "User Data will be deleted permanently!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -136,4 +183,6 @@
             });
         });
     </script>
+
 </body>
+</html>   

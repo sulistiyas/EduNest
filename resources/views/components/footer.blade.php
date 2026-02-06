@@ -41,6 +41,8 @@
 <script src="{{ asset('admin_lte/plugins/select2/js/select2.full.min.js') }}"></script>
 <!-- BS-Stepper -->
 <script src="{{ asset('admin_lte/plugins/bs-stepper/js/bs-stepper.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   // BS-Stepper Init
   document.addEventListener('DOMContentLoaded', function () {
