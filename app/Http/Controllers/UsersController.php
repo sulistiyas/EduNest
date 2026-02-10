@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Roles;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
+    public function authRole($role_name){
+        if (!Auth::user()->hasRole($role_name)) {
+            abort(403);
+        }
+    }
     public function index(){
         $users_data = DB::table('users')->where('deleted_at', null)->get();
         $roles_data = DB::table('roles')->where('deleted_at', null)->get();
@@ -28,7 +36,12 @@ class UsersController extends Controller
                 }
             }
         }
-        return view('users.index', compact('users_data', 'roles_data', 'school_data'));
+        return view('users.index', [
+            'users_data' => $users_data,
+            'roles_data' => $roles_data,
+            'school_data' => $school_data,
+            'formAction' => route('users.store'),
+        ]);
     }
     public function show($id){
         $user = User::with(['school', 'role'])->findOrFail($id);
@@ -47,10 +60,27 @@ class UsersController extends Controller
     }
 
     public function store(Request $request){
+        // $authRole = Auth::user()->role->name;
+
+        // $allowedRoles = [
+        //     'super_admin'  => ['super_admin', 'school_admin', 'teacher', 'student'],
+        //     'school_admin' => ['school_admin', 'teacher', 'student'],
+        // ]; 
+
+        // if (!isset($allowedRoles[$authRole])) {
+        //     abort(403, 'You do not have permission to create users.');
+        // }
+
+        
+        // $allowedRoleIds = Roles::whereIn('name', $allowedRoles[$authRole])
+        //     ->pluck('role_id')
+        //     ->toArray();
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            // 'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
+            // 'role_id' => ['required', Rule::in($allowedRoleIds)],
             // 'role_id' => 'required|integer|exists:roles,role_id',
             // 'school_id' => 'required|integer|exists:schools,school_id',
         ]);

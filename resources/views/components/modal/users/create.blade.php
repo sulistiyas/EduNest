@@ -1,4 +1,4 @@
-<form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" id="userForm" name="userForm">
+<form action="{{ $formAction }}" method="POST" enctype="multipart/form-data" id="userForm" name="userForm">
     @csrf
     <div class="modal fade" id="modal_users" tabindex="-1" role="dialog" aria-labelledby="modal_usersLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -22,15 +22,20 @@
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
                     </div>
-                    <div class="form-group">
-                        <label for="school_id">School</label>
-                        <select class="form-control" id="school_id" name="school_id" required>
-                            <option value="" disabled selected>Select School</option>
-                            @foreach($school_data as $school)
-                                <option value="{{ $school->school_id }}">{{ $school->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @if (Auth::user()->hasRole('super_admin'))
+                        <div class="form-group">
+                            <label for="school_id">School</label>
+                            <select class="form-control" id="school_id" name="school_id" required>
+                                <option value="" disabled selected>Select School</option>
+                                @foreach($school_data as $school)
+                                    <option value="{{ $school->school_id }}">{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @elseif (Auth::user()->hasRole('school_admin'))
+                        {{-- <input type="hidden" id="school_id" name="school_id" value="{{ Auth::user()->school_id }}"> --}}
+                    @endif
+                    
                     <div class="form-group">
                         <label for="role_id">Role</label>
                         <select class="form-control" id="role_id" name="role_id" required>

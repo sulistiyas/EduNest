@@ -41,36 +41,11 @@
               <p>Dashboard</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('school.index') }}" class="{{ Request::routeIs('school.index') ? 'nav-link active' : 'nav-link' }}">
-              <i class="nav-icon fas fa-school"></i>
-              <p>Schools</p>
-            </a>
-          </li>
-          <li class="{{ Request::routeIs('roles.*') || Request::routeIs('users.*') ? 'nav-item menu-open' : 'nav-item menu' }}">
-            <a href="#" class="{{ Request::routeIs('roles.*') || Request::routeIs('users.*') ? 'nav-link active' : 'nav-link' }}">
-              <i class="nav-icon fas fa-user-tag"></i>
-              <p>
-                Roles & Permissions
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{ route('roles.index') }}" class="{{ Request::routeIs('roles.index') ? 'nav-link active' : 'nav-link' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Roles</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('users.index') }}" class="{{ Request::routeIs('users.index') ? 'nav-link active' : 'nav-link' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Users</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          
+          @if(Auth::user()->hasRole('super_admin'))
+            @include('menu.super_admin')
+          @elseif (Auth::user()->hasRole('school_admin'))
+            @include('menu.school_admin')
+          @endif
           
         </ul>
       </nav>
@@ -78,12 +53,12 @@
     </div>
     <!-- /.sidebar -->
     <div class="sidebar-custom">
-      {{-- <form method="POST" action="{{ route('logout') }}" x-data>
+      <form method="POST" action="{{ route('logout') }}" x-data>
         @csrf
         <button type="submit" class="btn btn-default"><i class="fas fa-power-off"></i></button>
         <a href="{{ url('https://wa.me/+6282110873602') }}" class="btn btn-secondary hide-on-collapse pos-right" target="_blank">Contact Support</a>
-      </form> --}}
-      {{-- <a href="{{ route('logout') }}" class="btn btn-link"><i class="fas fa-cogs"></i></a> --}}
+      </form>
+      <a href="{{ route('logout') }}" class="btn btn-link"><i class="fas fa-cogs"></i></a>
       
     </div>
   </aside>
