@@ -1,5 +1,6 @@
-<form action="{{ route('users.update', ['id' => $user->id]) }}" method="POST" enctype="multipart/form-data" id="userFormupdate" name="userFormupdate">
+<form method="POST" id="userFormupdate" enctype="multipart/form-data">
     @csrf
+    @method('PUT')
     <div class="modal fade" id="modal_users_edit" tabindex="-1" role="dialog" aria-labelledby="modal_usersLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -22,6 +23,7 @@
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="update_password" name="update_password" placeholder="Enter Password" required>
                     </div> --}}
+                    @if(Auth::user()->hasRole('super_admin'))
                     <div class="form-group">
                         <label for="school_id">School</label>
                         <select class="form-control" id="update_school_id" name="update_school_id" required>
@@ -33,6 +35,9 @@
                             @endforeach
                         </select>
                     </div>
+                    @elseif (Auth::user()->hasRole('school_admin'))
+                        {{-- <input type="hidden" id="school_id" name="school_id" value="{{ Auth::user()->school_id }}"> --}}
+                    @endif
                     <div class="form-group">
                         <label for="role_id">Role</label>
                         <select class="form-control" id="update_role_id" name="update_role_id" required>

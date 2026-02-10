@@ -60,9 +60,9 @@
                                                     <td>{{ $user->school_name ?? 'N/A' }}</td>
                                                     <td>{{ $user->role_name ?? 'N/A' }}</td>
                                                     <td>
-                                                        <button class="btn btn-info btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_show">View</button>
-                                                        <button class="btn btn-warning btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_edit">Edit</button>
-                                                        <form action="{{ route('users.destroy', $user->id) }}"
+                                                        <button class="btn btn-info btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_show" data-endpoint="{{ $endPoint }}">View</button>
+                                                        <button class="btn btn-warning btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_edit" data-endpoint="{{ $endPoint }}">Edit</button>
+                                                        {{-- <form action="{{ route('users.destroy', $user->id) }}"
                                                             method="POST"
                                                             class="d-inline delete-form">
                                                             @csrf
@@ -70,7 +70,10 @@
                                                             <button type="submit" class="btn btn-sm btn-danger">
                                                                 Delete
                                                             </button>
-                                                        </form>
+                                                        </form> --}}
+                                                        <button class="btn btn-danger btn-sm" data-id="{{ $user->id }}" data-toggle="modal" data-target="#modal_users_delete" data-action="{{ $formActionDelete }}">
+                                                            Delete
+                                                        </button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -91,7 +94,10 @@
                 @if(isset($user))
                     @include('components.modal.users.edit')
                 @endif
-                
+                {{-- Delete Modal --}}
+                {{-- @if(isset($user)) --}}
+                    @include('components.modal.users.delete')
+                {{-- @endif --}}
                 <!-- /.content -->
             </div>
         <!--end::App Main-->
@@ -110,10 +116,11 @@
     $('#modal_users_show').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var userId = button.data('id');
+        var endpoint = button.data('endpoint');
         // console.log("User ID:", userId);
         // AJAX request to fetch user details
         $.ajax({
-            url: '/users/show/' + userId,
+            url: '/' + endpoint + '/show/' + userId,
             method: 'GET',
             success: function(response){
                 console.log(response);
@@ -131,37 +138,48 @@
     });
     // Edit User Modal Population
     $('#modal_users_edit').on('show.bs.modal', function (event) {
-        let button = $(event.relatedTarget);
-        let userId = button.data('id');
+    let button = $(event.relatedTarget)
+    let userId = button.data('id')
+    let endpoint = button.data('endpoint')
 
-        $.ajax({
-            url: '/users/edit/' + userId,
-            type: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                if (response.status) {
-                    $('#update_name').val(response.data.name);
-                    $('#update_email').val(response.data.email);
+    // 🔥 SET ACTION FORM
+    $('#userFormupdate').attr('action', '/' + endpoint + '/update/' + userId)
 
-                    // KUNCI UTAMA 🔥
-                    $('#update_role_id')
-                        .val(response.data.role_id)
-                        .trigger('change');
+    $.ajax({
+        url: '/' + endpoint + '/edit/' + userId,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.status) {
+                $('#update_name').val(response.data.name)
+                $('#update_email').val(response.data.email)
 
-                    $('#update_school_id')
-                        .val(response.data.school_id)
-                        .trigger('change');
-                }
-            },
-            error: function (xhr) {
-                console.error(xhr.responseText);
+                $('#update_role_id')
+                    .val(response.data.role_id)
+                    .trigger('change')
+
+                // $('#update_school_id')
+                //     .val(response.data.school_id)
+                //     .trigger('change')
             }
-        });
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText)
+        }
+    })
+})
+
+    $('#modal_users_delete').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let userId = button.data('id')
+        let baseUrl = button.data('action')
+
+        $('#deleteUserForm').attr('action', baseUrl + '/' + userId)
     });
 
     </script>
     {{-- Custom Alert For delete button --}}
-    <script>
+    {{-- <script>
         document.querySelectorAll('.delete-form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -182,7 +200,7 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 
 </body>
 </html>   

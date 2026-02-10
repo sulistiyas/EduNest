@@ -17,8 +17,8 @@ Route::middleware(['auth'])->group(function () {
         return view('Dash');
     })->name('dash');
 
-    // Route::prefix('super-admin')
-        Route::middleware('role:super_admin')
+    Route::prefix('super-admin')
+        ->middleware('role:super_admin')
         ->group(function () {
             // School Routes
             Route::get('school',[SchoolController::class, 'index'])->name('school.index');
@@ -48,13 +48,18 @@ Route::middleware(['auth'])->group(function () {
             // Assign Role to User
             Route::post('roles/assign-role',[RolesController::class, 'AssignRoleToUser'])->name('roles.assignRoleToUser');
     });
-    // Route::prefix('school-admin')
-        Route::middleware('role:school_admin')
+    Route::prefix('school-admin')
+        ->middleware('role:school_admin')
         ->group(function () {
-            // School Routes
+            // School Users Routes
             Route::get('school_users',[UserController::class, 'index'])->name('school_users.index');
-            Route::post('school_users/store',[UserController::class, 'store'])->name('school_users.store');});
-    
+            Route::post('school_users/store',[UserController::class, 'store'])->name('school_users.store');
+            Route::get('school_users/show/{id}',[UserController::class, 'show'])->name('school_users.show');
+            Route::get('school_users/edit/{id}',[UserController::class, 'edit'])->name('school_users.edit');
+            Route::put('school_users/update/{id}',[UserController::class, 'update'])->name('school_users.update');
+            Route::delete('school_users/delete/{id}',[UserController::class, 'destroy'])->name('school_users.destroy');
+        });
+
 
     // Route::middleware('role:admin')->group(function () {
     //     Route::get('/admin', fn () => 'Halaman Admin');

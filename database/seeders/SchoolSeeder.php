@@ -16,6 +16,14 @@ class SchoolSeeder extends Seeder
     {
         $school = [
             [
+                'name' => 'N/A',
+                'slug' => 'n-a',
+                'address' => 'Not Applicable',
+                'phone' => 'N/A',
+                'email' => 'info@n-a.edu',
+                'status' => 'active',
+            ],
+            [
             'name' => 'Greenwood High School',
             'slug' => 'greenwood-high-school',
             'address' => '123 Maple Street, Springfield',

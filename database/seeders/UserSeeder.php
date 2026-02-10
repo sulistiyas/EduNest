@@ -13,12 +13,45 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@edunest.com',
-            'password' => bcrypt('password'),
-            'role_id' => 1,
-            'school_id' => 1,
-        ]);
+        // User::create([
+        //     'name' => 'Super Admin',
+        //     'email' => 'superadmin@edunest.com',
+        //     'password' => bcrypt('password'),
+        //     'role_id' => 1,
+        //     'school_id' => 1,
+        // ]);
+
+        $user = [
+            [
+                'name' => 'Super Admin',
+                'email' => 'superadmin@edunest.com',
+                'password' => bcrypt('password'),
+                'role_id' => 1,
+                'school_id' => 1,
+            ],
+            [
+                'name' => 'School Admin',
+                'email' => 'schooladmin@edunest.com',
+                'password' => bcrypt('password'),
+                'role_id' => 2,
+                'school_id' => 2,
+            ],
+            [
+                'name' => 'Teacher User',
+                'email' => 'teacher@edunest.com',
+                'password' => bcrypt('password'),
+                'role_id' => 3,
+                'school_id' => 2,
+            ],
+            [
+                'name' => 'Student User',
+                'email' => 'student@edunest.com',
+                'password' => bcrypt('password'),
+                'role_id' => 4,
+                'school_id' => 2,
+            ]
+        ];
+        User::insert($user);
+        
     }
 }
