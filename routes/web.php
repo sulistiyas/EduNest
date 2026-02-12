@@ -58,6 +58,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('school_users/edit/{id}',[UserController::class, 'edit'])->name('school_users.edit');
             Route::put('school_users/update/{id}',[UserController::class, 'update'])->name('school_users.update');
             Route::delete('school_users/delete/{id}',[UserController::class, 'destroy'])->name('school_users.destroy');
+
+            // Class Routes
+            Route::get('class',[App\Http\Controllers\School\ClassController::class, 'index'])->name('class.index');
+            Route::get('class/show/{id}',[App\Http\Controllers\School\ClassController::class, 'show'])->name('class.show');
+            Route::post('class/store',[App\Http\Controllers\School\ClassController::class, 'store'])->name('class.store');
+            Route::get('class/edit/{id}',[App\Http\Controllers\School\ClassController::class, 'edit'])->name('class.edit');
+            Route::post('class/update/{id}',[App\Http\Controllers\School\ClassController::class, 'update'])->name('class.update');
+            Route::delete('class/delete/{id}',[App\Http\Controllers\School\ClassController::class, 'destroy'])->name('class.destroy');
         });
 
 
