@@ -158,9 +158,9 @@
                     .val(response.data.role_id)
                     .trigger('change')
 
-                // $('#update_school_id')
-                //     .val(response.data.school_id)
-                //     .trigger('change')
+                $('#update_school_id')
+                    .val(response.data.school_id)
+                    .trigger('change')
             }
         },
         error: function (xhr) {

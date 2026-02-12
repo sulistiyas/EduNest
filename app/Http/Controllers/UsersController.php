@@ -28,7 +28,7 @@ class UsersController extends Controller
                 }
             }
         }
-        $school_data = DB::table('schools')->where('deleted_at', null)->get();
+        $school_data = DB::table('schools')->where('deleted_at', null)->whereNotIn('school_id', [1])->get();
         foreach ($users_data as $user) {
             foreach ($school_data as $school) { 
                 if ($user->school_id == $school->school_id) {
@@ -40,7 +40,10 @@ class UsersController extends Controller
             'users_data' => $users_data,
             'roles_data' => $roles_data,
             'school_data' => $school_data,
+            'endPoint'=>'super-admin/users',
             'formAction' => route('users.store'),
+            // 'formActionUpdate' => route('school_users.update', ['id' => '']),
+            'formActionDelete' => 'users/delete',
         ]);
     }
     public function show($id){

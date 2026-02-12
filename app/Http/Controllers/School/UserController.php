@@ -23,7 +23,7 @@ class UserController extends Controller
                 }
             }
         }
-        $school_data = DB::table('schools')->where('deleted_at', null)->get();
+        $school_data = DB::table('schools')->where('deleted_at', null)->whereNotIn('school_id', [0])->get();
         foreach ($users_data as $user) {
             foreach ($school_data as $school) { 
                 if ($user->school_id == $school->school_id) {
