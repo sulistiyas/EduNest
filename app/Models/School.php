@@ -20,12 +20,22 @@ class School extends Model
         'status',
     ];
 
-    // protected $dates = 
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class, 'school_id', 'school_id');
+    }
 
-    // public function hasManyStudents()
-    // {
-    //     return $this->hasMany(Student::class, 'school_id', 'school_id');
-    // }
+    public function classes()
+    {
+        return $this->hasMany(Classes::class, 'school_id', 'school_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'school_id', 'school_id');
+    }
+
+    
 
 
 }

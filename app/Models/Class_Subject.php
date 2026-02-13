@@ -3,8 +3,41 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Class_Subject extends Model
 {
-    //
+    use SoftDeletes;
+    protected $primaryKey = 'class_subject_id';
+    protected $table = 'class_subjects';
+    protected $fillable = [
+        'school_id',
+        'class_id',
+        'subject_id',
+        'teacher_id',
+        'created_at',
+        'updated_at',
+    ];
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id', 'school_id');
+    }
+    
+    public function class()
+    {
+        return $this->belongsTo(Classes::class, 'class_id', 'class_id');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subject_id', 'subject_id');
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'teacher_id', 'id');
+    }
+
+
 }

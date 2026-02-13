@@ -34,7 +34,11 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">User List</h3>
+                                        @if(Auth::user()->hasRole('super_admin'))
+                                            <h3 class="card-title">User List</h3>
+                                        @elseif(Auth::user()->hasRole('school_admin'))
+                                            <h3 class="card-title">User List for <strong> {{ Auth::user()->school->name }} </strong></h3>
+                                        @endif
                                         <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_users">
                                             <i class="fas fa-plus">&nbsp;Add Data</i>
                                         </button>

@@ -1,5 +1,6 @@
 @include('components.header')
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
+    @include('sweetalert::alert')
     <div class="wrapper">
         <!-- Preloader -->
         {{-- <div class="preloader flex-column justify-content-center align-items-center">

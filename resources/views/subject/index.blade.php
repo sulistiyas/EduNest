@@ -19,7 +19,7 @@
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item active"> Classes</li>
+                                    <li class="breadcrumb-item active"> Subjects</li>
                                     <li class="breadcrumb-item"><a href="{{ route('dash') }}">Home</a></li>
                                 </ol>
                             </div><!-- /.col -->
@@ -35,32 +35,32 @@
                                 <div class="card">
                                     <div class="card-header">
                                         @if(Auth::user()->hasRole('super_admin'))
-                                            <h3 class="card-title">Class List</h3>
+                                            <h3 class="card-title">Subject Information</h3>
                                         @elseif(Auth::user()->hasRole('school_admin'))
-                                            <h3 class="card-title">Class List for <strong> {{ Auth::user()->school->name }} </strong></h3>
+                                            <h3 class="card-title">Subject Information for <strong> {{ Auth::user()->school->name }} </strong></h3>
                                         @endif
-                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_class">
+                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_subject">
                                             <i class="fas fa-plus">&nbsp;Add Data</i>
                                         </button>
                                     </div>
                                     <div class="card-body">
-                                        <table id="tbl_class" class="table table-bordered table-striped">
+                                        <table id="tbl_subject" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     <th style="width: 10px">#</th>
-                                                    <th>Class Name</th>
+                                                    <th>Subject Name</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($classes as $class)
+                                                @foreach($subjects as $subject)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $class->name }}</td>
+                                                    <td>{{ $subject->subject_name }}</td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-primary btn-view" data-id="{{ $class->class_id }}" data-toggle="modal" data-target="#modal_class_view">View</button>
-                                                        <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $class->class_id }}" data-toggle="modal" data-target="#modal_class_edit">Edit</button>
-                                                        <form action="{{ route('class.destroy', $class->class_id) }}"
+                                                        <button class="btn btn-sm btn-primary btn-view" data-id="{{ $subject->subject_id }}" data-toggle="modal" data-target="#modal_subject_view">View</button>
+                                                        <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $subject->subject_id }}" data-toggle="modal" data-target="#modal_subject_edit">Edit</button>
+                                                        <form action="{{ route('subject.destroy', $subject->subject_id) }}"
                                                             method="POST"
                                                             class="d-inline delete-form">
                                                             @csrf
@@ -82,12 +82,12 @@
                 </section>
                 {{-- Modal Section --}}
                 {{-- Create Modal --}}
-                @include('components.modal.classes.create')
+                @include('components.modal.subjects.create')
                 {{-- Show Modal --}}
-                @include('components.modal.classes.show')
+                @include('components.modal.subjects.show')
                 {{-- Edit Modal --}}
-                @if(isset($class))
-                    @include('components.modal.classes.edit', ['class' => $class])
+                @if(isset($subject))
+                    @include('components.modal.subjects.edit', ['subject' => $subject])
                 @endif
                 <!-- /.content -->
             </div>
@@ -98,22 +98,22 @@
     <script>
         // Datatables
         $(function () {
-            $("#tbl_class").DataTable({
+            $("#tbl_subject").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["csv", "excel", "pdf"]
-            }).buttons().container().appendTo('#tbl_class_wrapper .col-md-6:eq(0)');
+            }).buttons().container().appendTo('#tbl_subject_wrapper .col-md-6:eq(0)');
         });
-        // View Class Modal
-        $('#modal_class_view').on('show.bs.modal', function (event) {
+        // View Subject Modal
+        $('#modal_subject_view').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var classId = button.data('id');
+            var subjectId = button.data('id');
             $.ajax({
-                url: 'class/show/' + classId,
+                url: 'subject/show/' + subjectId,
                 method: 'GET',
                 success: function(response) {
                     console.log(response);
                     if(response.status) {
-                        $('#view_class_name').text(response.data.name);
+                        $('#view_subject_name').text(response.data.subject_name);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -121,17 +121,17 @@
                 }
             });
         });
-        // Edit Class Modal
-        $('#modal_class_edit').on('show.bs.modal', function (event) {
+        // Edit Subject Modal
+        $('#modal_subject_edit').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var classId = button.data('id');
+            var subjectId = button.data('id');
             $.ajax({
-                url: '/class/edit/' + classId,
+                url: '/subject/edit/' + subjectId,
                 method: 'GET',
                 success: function(response) {
                     console.log(response);
                     if(response.status) {
-                        $('#update_class_name').val(response.data.name);
+                        $('#update_subject_name').val(response.data.subject_name);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -148,7 +148,7 @@
 
                 Swal.fire({
                     title: 'Are You Sure?',
-                    text: "Class Data will be deleted permanently!",
+                    text: "Subject Data will be deleted permanently!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
