@@ -20,4 +20,9 @@ class Classes extends Model
     {
         return $this->belongsTo(School::class, 'school_id', 'school_id');
     }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'class_id', 'class_id');
+    }
 }

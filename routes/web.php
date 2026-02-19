@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
-use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RolesController;
-use App\Http\Controllers\School\UserController;
 use App\Http\Controllers\School\ClassController;
+use App\Http\Controllers\School\EnrollmentController;
 use App\Http\Controllers\School\SubjectController;
+use App\Http\Controllers\School\UserController;
+use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\UsersController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login_form'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -81,6 +82,13 @@ Route::middleware(['auth'])->group(function () {
             Route::post('subject/assign-teachers/store',[SubjectController::class, 'assignTeachers'])->name('subject.assignTeachers');
             Route::post('subject/assign-teachers/update',[SubjectController::class, 'assignTeachersUpdate'])->name('subject.assignTeachersUpdate');
             Route::delete('subject/assign-teachers/delete',[SubjectController::class, 'assignTeachersDelete'])->name('subject.assignTeachersDelete');
+
+            // Enrollment student
+            Route::get('enrollment',[EnrollmentController::class, 'index'])->name('enrollment.index');
+            Route::post('enrollment/store',[EnrollmentController::class, 'store'])->name('enrollment.store');
+            Route::get('enrollment/show/{id}',[EnrollmentController::class, 'show'])->name('enrollment.show');
+            Route::put('enrollment/update/{id}',[EnrollmentController::class, 'update'])->name('enrollment.update');
+            Route::delete('enrollment/delete/{id}',[EnrollmentController::class, 'destroy'])->name('enrollment.destroy'); 
         });
 
 

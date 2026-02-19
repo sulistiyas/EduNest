@@ -15,8 +15,8 @@
               </li>
             </ul>
         </li>
-        <li class="{{ Request::routeIs('class.*') || Request::routeIs('subject.*') ? 'nav-item menu-open' : 'nav-item menu' }}">
-            <a href="#" class="{{ Request::routeIs('class.*') || Request::routeIs('subject.*') ? 'nav-link active' : 'nav-link' }}">
+        <li class="{{ Request::routeIs('class.*') || Request::routeIs('subject.*') || Request::routeIs('enrollment.*') ? 'nav-item menu-open' : 'nav-item menu' }}">
+            <a href="#" class="{{ Request::routeIs('class.*') || Request::routeIs('subject.*') || Request::routeIs('enrollment.*') ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-chalkboard"></i>
               <p>
                 Class Management
@@ -40,6 +40,12 @@
                 <a href="{{ route('subject.assignTeachersForm') }}" class="{{ Request::routeIs('subject.assignTeachersForm') ? 'nav-link active' : 'nav-link' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Assign Teachers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('enrollment.index') }}" class="{{ Request::routeIs('enrollment.index') ? 'nav-link active' : 'nav-link' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Enroll Student</p>
                 </a>
               </li>
             </ul>

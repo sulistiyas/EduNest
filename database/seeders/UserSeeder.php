@@ -28,6 +28,8 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role_id' => 1,
                 'school_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'School Admin',
@@ -35,6 +37,8 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role_id' => 2,
                 'school_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Teacher User',
@@ -42,16 +46,34 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role_id' => 3,
                 'school_id' => 2,
-            ],
-            [
-                'name' => 'Student User',
-                'email' => 'student@edunest.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+            // ,
+            // [
+            //     'name' => 'Student User',
+            //     'email' => 'student@edunest.com',
+            //     'password' => bcrypt('password'),
+            //     'role_id' => 4,
+            //     'school_id' => 2,
+            // ]
+        ];
+        User::insert($user);
+        $students = [];
+
+        for ($i = 1; $i <= 30; $i++) {
+            $students[] = [
+                'name' => 'Student User ' . $i,
+                'email' => 'student' . $i . '@edunest.com',
                 'password' => bcrypt('password'),
                 'role_id' => 4,
                 'school_id' => 2,
-            ]
-        ];
-        User::insert($user);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        User::insert($students);
         
     }
 }
