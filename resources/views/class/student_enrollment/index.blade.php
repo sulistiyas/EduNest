@@ -56,7 +56,7 @@
                                                     <td>
                                                         <button class="btn btn-sm btn-primary btn-view" data-id="{{ $class->class_id }}" data-toggle="modal" data-target="#modal_enrollment_view">View</button>
                                                         <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $class->class_id }}" data-toggle="modal" data-target="#modal_enrollment_edit">Edit</button>
-                                                        <form action="{{ route('class.destroy', $class->class_id) }}"
+                                                        <form action="{{ route('enrollment.destroy', $class->class_id) }}"
                                                             method="POST"
                                                             class="d-inline delete-form">
                                                             @csrf
@@ -92,6 +92,53 @@
     </div>
     @include('components.footer')
     <script>
+    
+    $('#class_id').on('change', function () {
+
+        let classId = $(this).val();
+
+        if (classId) {
+
+            $.ajax({
+                url: 'enrollment/students/' + classId,
+                type: 'GET',
+                success: function (response) {
+
+                    $('#student_id').empty();
+
+                    if (response.status && response.data.length > 0) {
+
+                        $.each(response.data, function (key, student) {
+                            $('#student_id').append(
+                                `<option value="${student.id}">
+                                    ${student.name}
+                                </option>`
+                            );
+                        });
+
+                    } else {
+
+                        $('#student_id').append(
+                            `<option disabled>
+                                No available students
+                            </option>`
+                        );
+
+                    }
+
+                    $('#student_id').trigger('change'); // refresh select2
+                }
+            });
+
+        }
+    });
+
+</script>
+    <script>
+        $('#modal_enrollment').on('show.bs.modal', function () {
+            $('#student_id').empty().trigger('change');
+        });
+
         // Datatables
         $(function () {
             $("#tbl_enrollment").DataTable({
@@ -100,23 +147,83 @@
             }).buttons().container().appendTo('#tbl_enrollment_wrapper .col-md-6:eq(0)');
         });
         // View Class Modal
+        // $('#modal_enrollment_view').on('show.bs.modal', function (event) {
+        //     var button = $(event.relatedTarget);
+        //     var classId = button.data('id');
+        //     $.ajax({
+        //         url: 'class/show/' + classId,
+        //         method: 'GET',
+        //         success: function(response) {
+        //             console.log(response);
+        //             if(response.status) {
+        //                 $('#view_class_name').text(response.data.name);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.log(error);
+        //         }
+        //     });
+        // });
         $('#modal_enrollment_view').on('show.bs.modal', function (event) {
+
             var button = $(event.relatedTarget);
             var classId = button.data('id');
+
+            $('#student_list').html(`
+                <tr>
+                    <td colspan="3" class="text-center">Loading...</td>
+                </tr>
+            `);
+
             $.ajax({
-                url: 'class/show/' + classId,
+                url: 'enrollment/show/' + classId,
                 method: 'GET',
                 success: function(response) {
-                    console.log(response);
-                    if(response.status) {
-                        $('#view_class_name').text(response.data.name);
+
+                    if(response.status === true) {
+
+                        let enrollments = response.data;
+                        let html = '';
+
+                        if(enrollments.length > 0) {
+
+                            enrollments.forEach(function(item, index) {
+
+                                html += `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.student.name}</td>
+                                        <td>${item.student.email}</td>
+                                    </tr>
+                                `;
+                            });
+
+                        } else {
+                            html = `
+                                <tr>
+                                    <td colspan="3" class="text-center">
+                                        No students found
+                                    </td>
+                                </tr>
+                            `;
+                        }
+
+                        $('#student_list').html(html);
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.log(error);
+                error: function(xhr) {
+                    $('#student_list').html(`
+                        <tr>
+                            <td colspan="3" class="text-center text-danger">
+                                Failed to load data
+                            </td>
+                        </tr>
+                    `);
                 }
             });
+
         });
+
         // Edit Class Modal
         $('#modal_enrollment_edit').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);

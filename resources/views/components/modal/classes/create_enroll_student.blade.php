@@ -39,3 +39,47 @@
         </div>
     </div>
 </form>
+
+<script>
+    
+    $('#class_id').on('change', function () {
+
+        let classId = $(this).val();
+
+        if (classId) {
+
+            $.ajax({
+                url: 'enrollment/students/' + classId,
+                type: 'GET',
+                success: function (response) {
+
+                    $('#student_id').empty();
+
+                    if (response.status && response.data.length > 0) {
+
+                        $.each(response.data, function (key, student) {
+                            $('#student_id').append(
+                                `<option value="${student.id}">
+                                    ${student.name}
+                                </option>`
+                            );
+                        });
+
+                    } else {
+
+                        $('#student_id').append(
+                            `<option disabled>
+                                No available students
+                            </option>`
+                        );
+
+                    }
+
+                    $('#student_id').trigger('change'); // refresh select2
+                }
+            });
+
+        }
+    });
+
+</script>

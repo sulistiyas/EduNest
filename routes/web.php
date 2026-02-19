@@ -86,9 +86,12 @@ Route::middleware(['auth'])->group(function () {
             // Enrollment student
             Route::get('enrollment',[EnrollmentController::class, 'index'])->name('enrollment.index');
             Route::post('enrollment/store',[EnrollmentController::class, 'store'])->name('enrollment.store');
-            Route::get('enrollment/show/{id}',[EnrollmentController::class, 'show'])->name('enrollment.show');
+            Route::get('enrollment/show/{class_id}',[EnrollmentController::class, 'show'])->name('enrollment.show');
             Route::put('enrollment/update/{id}',[EnrollmentController::class, 'update'])->name('enrollment.update');
             Route::delete('enrollment/delete/{id}',[EnrollmentController::class, 'destroy'])->name('enrollment.destroy'); 
+            // Get Student Available for Enrollment
+            Route::get('enrollment/students/{class_id}', [EnrollmentController::class, 'getAvailableStudents'])->name('getAvailableStudents');
+
         });
 
 
