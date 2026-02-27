@@ -39,5 +39,17 @@ class Class_Subject extends Model
         return $this->belongsTo(User::class, 'teacher_id', 'id');
     }
 
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class, 'class_subject_id', 'class_subject_id');
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class, 'class_subject_id', 'class_subject_id');
+    }
+
+    
+
 
 }

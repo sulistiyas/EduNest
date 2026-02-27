@@ -8,6 +8,7 @@ use App\Http\Controllers\School\SubjectController;
 use App\Http\Controllers\School\UserController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\Teacher\ClassController as TeacherClassController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login_form'])->name('login');
@@ -92,6 +93,22 @@ Route::middleware(['auth'])->group(function () {
             // Get Student Available for Enrollment
             Route::get('enrollment/students/{class_id}', [EnrollmentController::class, 'getAvailableStudents'])->name('getAvailableStudents');
 
+        });
+
+    Route::prefix('teacher')
+        ->middleware('role:teacher')
+        ->group(function () {
+            // Teacher Routes
+            Route::get('/home', function () { return view('teacher.dash');})->name('teacher.dash');
+
+
+            // Class Management
+            Route::get('/classes', [TeacherClassController::class, 'index'])->name('teacher.classes.index');
+            Route::get('/classes/{id}/students', [TeacherClassController::class, 'students']);
+            Route::get('/classes/{id}/subjects', [TeacherClassController::class, 'subjects']);
+            // Academic
+            // Reporting
+            // Account
         });
 
 

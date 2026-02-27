@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materials', function (Blueprint $table) {
-            $table->id();
+            $table->id('material_id');
+            $table->bigInteger('class_subject_id')->unsigned();
+            $table->foreign('class_subject_id')->references('class_subject_id')->on('class_subjects')->onDelete('cascade');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

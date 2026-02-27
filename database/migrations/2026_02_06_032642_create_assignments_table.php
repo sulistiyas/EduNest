@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assignments', function (Blueprint $table) {
-            $table->id();
+            $table->id('assignment_id');
+            $table->bigInteger('class_subject_id')->unsigned();
+            $table->foreign('class_subject_id')->references('class_subject_id')->on('class_subjects')->onDelete('cascade');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->date('due_date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

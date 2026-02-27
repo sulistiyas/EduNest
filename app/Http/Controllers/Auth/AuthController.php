@@ -18,9 +18,26 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            Alert::success('Login Successful', 'Welcome back!');
-            return redirect()->intended('dash');
+            if(Auth::user()->hasRole('super_admin')){
+                $request->session()->regenerate();
+                Alert::success('Login Successful', 'Welcome back, Super Admin!');
+                return redirect()->intended('dash');
+            } elseif (Auth::user()->hasRole('school_admin')) {
+                $request->session()->regenerate();
+                Alert::success('Login Successful', 'Welcome back, School Admin!');
+                return redirect()->intended('dash');
+            } elseif (Auth::user()->hasRole('teacher')) {
+                $request->session()->regenerate();
+                Alert::success('Login Successful', 'Welcome back, Teacher!');
+                return redirect()->intended('teacher/home');
+            } elseif (Auth::user()->hasRole('student')) {
+                $request->session()->regenerate();
+                Alert::success('Login Successful', 'Welcome back, Student!');
+                return redirect()->intended('dash');
+            }
+            
+            // Alert::success('Login Successful', 'Welcome back!');
+            // return redirect()->intended('dash');
         }
 
         return back()->withErrors([

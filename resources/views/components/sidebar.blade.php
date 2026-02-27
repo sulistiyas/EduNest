@@ -35,16 +35,27 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
+          
+          @if(Auth::user()->hasRole('super_admin'))
           <li class="nav-item">
             <a href="{{ route('dash') }}" class="{{ Request::routeIs('dash') ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Dashboard</p>
             </a>
           </li>
-          @if(Auth::user()->hasRole('super_admin'))
             @include('menu.super_admin')
           @elseif (Auth::user()->hasRole('school_admin'))
+          <li class="nav-item">
+            <a href="{{ route('dash') }}" class="{{ Request::routeIs('dash') ? 'nav-link active' : 'nav-link' }}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
             @include('menu.school_admin')
+          @elseif (Auth::user()->hasRole('teacher'))
+            @include('menu.teacher')
+          @elseif (Auth::user()->hasRole('student'))
+            @include('menu.student')
           @endif
           
         </ul>

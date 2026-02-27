@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grades', function (Blueprint $table) {
-            $table->id();
+            $table->id('grade_id');
+            $table->bigInteger('submission_id')->unsigned();
+            $table->foreign('submission_id')->references('submission_id')->on('submissions')->onDelete('cascade');
+            $table->decimal('score', 5, 2);
+            $table->text('feedback')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
