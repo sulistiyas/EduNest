@@ -96,6 +96,29 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
+                  <p>Class Schedule</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Teacher Schedule</p>
+                </a>
+              </li>
+            </ul>
+        </li>
+        <li class="{{ Request::routeIs('academic_year.*') || Request::routeIs('semester.*') ? 'nav-item menu-open' : 'nav-item menu' }}">
+            <a href="#" class="{{ Request::routeIs('academic_year.*') || Request::routeIs('semester.*') ? 'nav-link active' : 'nav-link' }}">
+              <i class="nav-icon fas fa-university"></i>
+              <p>
+                Academic Setup
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('academic_year.index') }}" class="{{ Request::routeIs('academic_year.index') ? 'nav-link active' : 'nav-link' }}">
+                  <i class="far fa-circle nav-icon"></i>
                   <p>Academic Year</p>
                 </a>
               </li>

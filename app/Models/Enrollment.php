@@ -27,5 +27,12 @@ class Enrollment extends Model
         return $this->belongsTo(Classes::class, 'class_id');
     }
 
+    public function academicYear()
+    {
+        return $this->belongsTo(Academic_Years::class, 'academic_year_id', 'academic_year_id');
+    }
+
+    
+
 
 }

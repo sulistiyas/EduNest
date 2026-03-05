@@ -9,6 +9,7 @@ use App\Http\Controllers\School\UserController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Teacher\ClassController as TeacherClassController;
+use App\Http\Controllers\School\Academic_SemesterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login_form'])->name('login');
@@ -85,7 +86,15 @@ Route::middleware(['auth'])->group(function () {
             Route::post('subject_teachers/assign-teachers/store',[SubjectController::class, 'assignTeachers'])->name('subject_teachers.assignTeachers');
             Route::post('subject_teachers/assign-teachers/update',[SubjectController::class, 'assignTeachersUpdate'])->name('subject_teachers.assignTeachersUpdate');
             Route::delete('subject_teachers/assign-teachers/delete',[SubjectController::class, 'assignTeachersDelete'])->name('subject_teachers.assignTeachersDelete');
-
+            
+            // Academic Year and Semester Routes
+            Route::get('academic_years',[Academic_SemesterController::class, 'index_academic_year'])->name('academic_year.index');
+            Route::post('academic_years/store',[Academic_SemesterController::class, 'store_academic_year'])->name('academic_year.store');
+            Route::get('academic_years/show/{id}',[Academic_SemesterController::class, 'show_academic_year'])->name('academic_year.show');
+            Route::get('academic_years/edit/{id}',[Academic_SemesterController::class, 'edit_academic_year'])->name('academic_year.edit');
+            Route::post('academic_years/update/{id}',[Academic_SemesterController::class, 'update_academic_year'])->name('academic_year.update');
+            Route::delete('academic_years/delete/{id}',[Academic_SemesterController::class, 'destroy_academic_year'])->name('academic_year.destroy');
+            
             // Enrollment student
             Route::get('enrollment',[EnrollmentController::class, 'index'])->name('enrollment.index');
             Route::post('enrollment/store',[EnrollmentController::class, 'store'])->name('enrollment.store');
