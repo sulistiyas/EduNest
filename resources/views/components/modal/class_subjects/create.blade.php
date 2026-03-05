@@ -1,4 +1,4 @@
-<form action="{{ route('subject.assignTeachers') }}" method="POST" enctype="multipart/form-data" id="AssignTeacherForm" name="AssignTeacherForm">
+<form action="{{ route('subject_teachers.assignTeachers') }}" method="POST" enctype="multipart/form-data" id="AssignTeacherForm" name="AssignTeacherForm">
     @csrf
     <div class="modal fade" id="modal_assignTeacher" tabindex="-1" role="dialog" aria-labelledby="modal_assignTeacherLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

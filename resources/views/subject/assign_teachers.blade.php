@@ -73,7 +73,7 @@
                                                                 data-target="#modal_class_subject_edit">
                                                                 Edit
                                                             </button>
-                                                            <form method="POST" action="{{ route('subject.assignTeachersDelete') }}" class="d-inline delete-form">
+                                                            <form method="POST" action="{{ route('subject_teachers.assignTeachersDelete') }}" class="d-inline delete-form">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <input type="hidden" name="teacher_id" value="{{ $row['teacher_id'] }}">

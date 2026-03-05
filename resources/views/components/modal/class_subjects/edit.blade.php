@@ -1,4 +1,4 @@
-<form action="{{ route('subject.assignTeachersUpdate') }}" method="POST" id="EditAssignForm">
+<form action="{{ route('subject_teachers.assignTeachersUpdate') }}" method="POST" id="EditAssignForm">
     @csrf
 
     <input type="hidden" name="teacher_id" id="edit_teacher_id">

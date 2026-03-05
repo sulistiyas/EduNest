@@ -56,7 +56,9 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:school_admin')
         ->group(function () {
             // School Users Routes
-            Route::get('school_users',[UserController::class, 'index'])->name('school_users.index');
+            Route::get('school_users',[UserController::class, 'index_admin'])->name('school_users.index_admin');
+            Route::get('school_users/teachers',[UserController::class, 'index_teacher'])->name('school_users.index_teacher');
+            Route::get('school_users/students',[UserController::class, 'index_student'])->name('school_users.index_student');
             Route::post('school_users/store',[UserController::class, 'store'])->name('school_users.store');
             Route::get('school_users/show/{id}',[UserController::class, 'show'])->name('school_users.show');
             Route::get('school_users/edit/{id}',[UserController::class, 'edit'])->name('school_users.edit');
@@ -79,10 +81,10 @@ Route::middleware(['auth'])->group(function () {
             Route::post('subject/update/{id}',[SubjectController::class, 'update'])->name('subject.update');
             Route::delete('subject/delete/{id}',[SubjectController::class, 'destroy'])->name('subject.destroy');
             
-            Route::get('subject/assign-teachers',[SubjectController::class, 'assignTeachersForm'])->name('subject.assignTeachersForm');
-            Route::post('subject/assign-teachers/store',[SubjectController::class, 'assignTeachers'])->name('subject.assignTeachers');
-            Route::post('subject/assign-teachers/update',[SubjectController::class, 'assignTeachersUpdate'])->name('subject.assignTeachersUpdate');
-            Route::delete('subject/assign-teachers/delete',[SubjectController::class, 'assignTeachersDelete'])->name('subject.assignTeachersDelete');
+            Route::get('subject_teachers/assign-teachers',[SubjectController::class, 'assignTeachersForm'])->name('subject_teachers.assignTeachersForm');
+            Route::post('subject_teachers/assign-teachers/store',[SubjectController::class, 'assignTeachers'])->name('subject_teachers.assignTeachers');
+            Route::post('subject_teachers/assign-teachers/update',[SubjectController::class, 'assignTeachersUpdate'])->name('subject_teachers.assignTeachersUpdate');
+            Route::delete('subject_teachers/assign-teachers/delete',[SubjectController::class, 'assignTeachersDelete'])->name('subject_teachers.assignTeachersDelete');
 
             // Enrollment student
             Route::get('enrollment',[EnrollmentController::class, 'index'])->name('enrollment.index');

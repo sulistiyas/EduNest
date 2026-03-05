@@ -12,10 +12,70 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index_admin(){
         $school_id = Auth::user()->school_id;
-        $users_data = DB::table('users')->where('deleted_at', null)->where('school_id', $school_id)->get();
-        $roles_data = DB::table('roles')->where('deleted_at', null)->whereNotIn('role_id', [1])->get();
+        $users_data = DB::table('users')->where('deleted_at', null)->where('school_id', $school_id)->where('role_id', 2)->get();
+        $roles_data = DB::table('roles')->where('deleted_at', null)->whereNotIn('role_id', [1,3,4])->get();
+        foreach ($users_data as $user) {
+            foreach ($roles_data as $role) {
+                if ($user->role_id == $role->role_id) {
+                    $user->role_name = $role->name;
+                }
+            }
+        }
+        $school_data = DB::table('schools')->where('deleted_at', null)->whereNotIn('school_id', [0])->get();
+        foreach ($users_data as $user) {
+            foreach ($school_data as $school) { 
+                if ($user->school_id == $school->school_id) {
+                    $user->school_name = $school->name;
+                }
+            }
+        }
+        return view('users.index', [
+            'users_data' => $users_data,
+            'roles_data' => $roles_data,
+            'school_data' => $school_data,
+            'endPoint'=>'school-admin/school_users',
+            'formAction' => route('school_users.store'),
+            // 'formActionUpdate' => route('school_users.update', ['id' => '']),
+            'formActionDelete' => 'school_users/delete',
+        ]);
+    }
+
+    public function index_teacher(){
+        $school_id = Auth::user()->school_id;
+        $users_data = DB::table('users')->where('deleted_at', null)->where('school_id', $school_id)->where('role_id', 3)->get();
+        $roles_data = DB::table('roles')->where('deleted_at', null)->whereNotIn('role_id', [1,2,4])->get();
+        foreach ($users_data as $user) {
+            foreach ($roles_data as $role) {
+                if ($user->role_id == $role->role_id) {
+                    $user->role_name = $role->name;
+                }
+            }
+        }
+        $school_data = DB::table('schools')->where('deleted_at', null)->whereNotIn('school_id', [0])->get();
+        foreach ($users_data as $user) {
+            foreach ($school_data as $school) { 
+                if ($user->school_id == $school->school_id) {
+                    $user->school_name = $school->name;
+                }
+            }
+        }
+        return view('users.index', [
+            'users_data' => $users_data,
+            'roles_data' => $roles_data,
+            'school_data' => $school_data,
+            'endPoint'=>'school-admin/school_users',
+            'formAction' => route('school_users.store'),
+            // 'formActionUpdate' => route('school_users.update', ['id' => '']),
+            'formActionDelete' => 'school_users/delete',
+        ]);
+    }
+
+    public function index_student(){
+        $school_id = Auth::user()->school_id;
+        $users_data = DB::table('users')->where('deleted_at', null)->where('school_id', $school_id)->where('role_id', 4)->get();
+        $roles_data = DB::table('roles')->where('deleted_at', null)->whereNotIn('role_id', [1,2,3])->get();
         foreach ($users_data as $user) {
             foreach ($roles_data as $role) {
                 if ($user->role_id == $role->role_id) {
