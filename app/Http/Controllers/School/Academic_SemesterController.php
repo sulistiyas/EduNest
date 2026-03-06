@@ -21,10 +21,10 @@ class Academic_SemesterController extends Controller
     public function store_academic_year(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'year_name' => 'required|string|unique:academic_years,year_name',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'is_active' => 'required|boolean',
+            'create_academic_year_name' => 'required|string',
+            'create_start_date' => 'required|date',
+            'create_end_date' => 'required|date|after:create_start_date',
+            'create_is_active' => 'required|boolean',
         ]);
 
         if($validate->fails()) {
@@ -35,7 +35,10 @@ class Academic_SemesterController extends Controller
             ]);
         }else{
             try {
-                $getAcademicYearName = Academic_Years::where('year_name', $request->year_name)->first();
+                $yearName = $request->create_academic_year_name;
+                $startDate = $request->create_start_date;
+                $endDate = $request->create_end_date;
+                $getAcademicYearName = Academic_Years::where('year_name', $request->create_academic_year_name)->first();
                 if($getAcademicYearName) {
                     // return response()->json([
                     //     'status' => false,
@@ -43,21 +46,60 @@ class Academic_SemesterController extends Controller
                     // ]);
                     Alert::error('Error', 'Academic year name already exists');
                     return redirect()->route('academic_year.index');
+                    
                 }else{
-                    Academic_Years::create([
-                        'year_name' => $request->year_name,
-                        'start_date' => $request->start_date,
-                        'end_date' => $request->end_date,
-                        'is_active' => $request->is_active,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                    // return response()->json([
-                    //     'status' => true,
-                    //     'message' => 'Academic year created successfully'
-                    // ]);
-                    Alert::success('Success', 'Academic year created successfully');
-                    return redirect()->route('academic_year.index');
+
+                    // if($request->create_is_active) {
+                    //     // Deactivate all other academic years
+                    //     Academic_Years::where('is_active', true)->update(['is_active' => false]);
+                    // }
+                    $years = explode('/', $yearName);
+
+                    $startYear = $years[0];
+                    $endYear = $years[1];
+
+                    if( date('Y', strtotime($startDate)) < $startYear || date('Y', strtotime($endDate)) > $endYear) {
+                        // return response()->json([
+                        //     'status' => false,
+                        //     'message' => 'Start and end dates must match the academic year format'
+                        // ]);
+                        Alert::error('Error', 'Start and end dates must match the academic year format');
+                        return redirect()->route('academic_year.index');
+                    }else{
+                        if($startDate > $endDate) {
+                            // return response()->json([
+                            //     'status' => false,
+                            //     'message' => 'Start date must be before end date'
+                            // ]);
+                            Alert::error('Error', 'Start date must be before end date');
+                            return redirect()->route('academic_year.index');
+                        }else{
+                            if($endDate < $startDate){
+                                // return response()->json([
+                                //     'status' => false,
+                                //     'message' => 'End date must be after start date'
+                                // ]);
+                                Alert::error('Error', 'End date must be after start date');
+                                return redirect()->route('academic_year.index');
+                            }else{
+                                Academic_Years::create([
+                                    'year_name' => $request->create_academic_year_name,
+                                    'start_date' => $request->create_start_date,
+                                    'end_date' => $request->create_end_date,
+                                    'is_active' => $request->create_is_active,
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
+                                ]);
+                                // return response()->json([
+                                //     'status' => true,
+                                //     'message' => 'Academic year created successfully'
+                                // ]);
+                                Alert::success('Success', 'Academic year created successfully');
+                                return redirect()->route('academic_year.index');
+                            }
+                        }
+                    }
+                    
                 }
             } catch (\Exception $e) {
                 // return response()->json([
@@ -95,8 +137,8 @@ class Academic_SemesterController extends Controller
         $validate = Validator::make($request->all(), [
             'update_academic_year_name' => 'required|string',
             'update_start_date' => 'required|date',
-            'update_end_date' => 'required|date|after:update_start_date',
-            'update_is_active' => 'required|boolean',
+            'update_end_date' => 'required|date',
+            'update_is_active' => 'required',
         ]);
 
         if($validate->fails()) {
@@ -108,19 +150,55 @@ class Academic_SemesterController extends Controller
         }else{
             try {
                 $academicYear = Academic_Years::findOrFail($id);
-                $academicYear->update([
-                    'year_name' => $request->update_academic_year_name,
-                    'start_date' => $request->update_start_date,
-                    'end_date' => $request->update_end_date,
-                    'is_active' => $request->update_is_active,
-                    'updated_at' => now(),
-                ]);
-                // return response()->json([
-                //     'status' => true,
-                //     'message' => 'Academic year updated successfully'
-                // ]);
-                Alert::success('Success', 'Academic year updated successfully');
-                return redirect()->route('academic_year.index');
+                $yearName = $request->update_academic_year_name;
+                $startDate = $request->update_start_date;
+                $endDate = $request->update_end_date;
+                
+                $years = explode('/', $yearName);
+                $startYear = $years[0];
+                $endYear = $years[1];
+
+                if( date('Y', strtotime($startDate)) < $startYear || date('Y', strtotime($endDate)) > $endYear) {
+                        // return response()->json([
+                        //     'status' => false,
+                        //     'message' => 'Start and end dates must match the academic year format'
+                        // ]);
+                        Alert::error('Error', 'Start and end dates must match the academic year format');
+                        return redirect()->route('academic_year.index');
+                    }else{
+                        if($startDate > $endDate) {
+                            // return response()->json([
+                            //     'status' => false,
+                            //     'message' => 'Start date must be before end date'
+                            // ]);
+                            Alert::error('Error', 'Start date must be before end date');
+                            return redirect()->route('academic_year.index');
+                        }else{
+                            if($endDate < $startDate){
+                                // return response()->json([
+                                //     'status' => false,
+                                //     'message' => 'End date must be after start date'
+                                // ]);
+                                Alert::error('Error', 'End date must be after start date');
+                                return redirect()->route('academic_year.index');
+                            }else{
+                                $academicYear->update([
+                                    'year_name' => $request->update_academic_year_name,
+                                    'start_date' => $request->update_start_date,
+                                    'end_date' => $request->update_end_date,
+                                    'is_active' => $request->update_is_active,
+                                    'updated_at' => now(),
+                                ]);
+                                // return response()->json([
+                                //     'status' => true,
+                                //     'message' => 'Academic year updated successfully'
+                                // ]);
+                                Alert::success('Success', 'Academic year updated successfully');
+                                return redirect()->route('academic_year.index');
+                            }
+                        }
+                    }
+                
             } catch (\Exception $e) {
                 // return response()->json([
                 //     'status' => false,

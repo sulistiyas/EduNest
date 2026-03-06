@@ -12,7 +12,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="update_academic_year_name">Academic Year Name</label>
-                        <input type="text" class="form-control" id="update_academic_year_name" name="update_academic_year_name" placeholder="Enter Academic Year Name" value="{{ $year->year_name }}" required>
+                        <input type="text" class="form-control" id="update_academic_year_name" name="update_academic_year_name" placeholder="Enter Academic Year Name" value="{{ $year->year_name }}" readonly required>
                     </div>
 
                     <div class="form-group">

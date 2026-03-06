@@ -35,7 +35,7 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">Academic Years</h3>
-                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_academic_year">
+                                        <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_academic_year_create">
                                             <i class="fas fa-plus">&nbsp;Add Data</i>
                                         </button>
                                     </div>
