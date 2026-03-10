@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('academic_years', function (Blueprint $table) {
             $table->id('academic_year_id');
+            $table->bigInteger('school_id')->unsigned();
+            $table->foreign('school_id')->references('school_id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
             $table->string('year_name',100);
             $table->date('start_date');
             $table->date('end_date');

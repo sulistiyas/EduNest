@@ -15,6 +15,7 @@ class Class_Subject extends Model
         'class_id',
         'subject_id',
         'teacher_id',
+        'academic_year_id',
         'created_at',
         'updated_at',
     ];
@@ -32,6 +33,16 @@ class Class_Subject extends Model
     public function subject()
     {
         return $this->belongsTo(Subject::class, 'subject_id', 'subject_id');
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'class_subject_id', 'class_subject_id');
+    }
+
+    public function academicYear()
+    {
+        return $this->belongsTo(Academic_Years::class, 'academic_year_id', 'academic_year_id');
     }
 
     public function teacher()

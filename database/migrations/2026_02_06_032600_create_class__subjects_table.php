@@ -17,10 +17,12 @@ return new class extends Migration
             $table->bigInteger('class_id')->unsigned();
             $table->bigInteger('subject_id')->unsigned();
             $table->bigInteger('teacher_id')->unsigned()->nullable();
+            $table->bigInteger('academic_year_id')->unsigned();
             $table->foreign('school_id')->references('school_id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('class_id')->references('class_id')->on('classes')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('subject_id')->references('subject_id')->on('subjects')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('teacher_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('academic_year_id')->references('academic_year_id')->on('academic_years')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

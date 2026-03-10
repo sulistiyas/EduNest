@@ -64,17 +64,26 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        {{-- <button class="btn btn-sm btn-primary btn-view" data-id="{{ $year->academic_year_id }}" data-toggle="modal" data-target="#modal_academic_year_view">View</button> --}}
-                                                        <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $year->academic_year_id }}" data-toggle="modal" data-target="#modal_academic_year_edit">Edit</button>
-                                                        <form action="{{ route('academic_year.destroy', $year->academic_year_id) }}"
-                                                            method="POST"
-                                                            class="d-inline delete-form">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                                Delete
-                                                            </button>
-                                                        </form>
+                                                        @if ($year->is_active)
+                                                            <form action="{{ route('academic_year.setDeactive', $year->academic_year_id) }}"
+                                                                method="POST"
+                                                                class="d-inline deactivate-form">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-sm btn-secondary">
+                                                                    Deactivate
+                                                                </button>
+                                                            </form>
+                                                            
+                                                        @else
+                                                            <form action="{{ route('academic_year.setActive', $year->academic_year_id) }}"
+                                                                method="POST"
+                                                                class="d-inline activate-form">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-sm btn-success">
+                                                                    Activate
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -154,18 +163,41 @@
     </script>
     {{-- Custom Alert For delete button --}}
     <script>
-        document.querySelectorAll('.delete-form').forEach(form => {
+        document.querySelectorAll('.activate-form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 Swal.fire({
                     title: 'Are You Sure?',
-                    text: "Academic Year Data will be deleted permanently!",
+                    text: "Academic Year Will be Activated!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete!',
+                    confirmButtonText: 'Yes, Activate!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.querySelectorAll('.deactivate-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Are You Sure?',
+                    text: "Academic Year Will be Deactivated!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, Deactivate!',
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {

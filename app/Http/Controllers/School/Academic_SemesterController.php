@@ -112,123 +112,45 @@ class Academic_SemesterController extends Controller
         }
     }
 
-    public function show_academic_year($id)
-    {
-        $academicYear = Academic_Years::findOrFail($id);
-
-        return response()->json([
-            'status' => true,
-            'data' => $academicYear
-        ]); 
-    }
-
-    public function edit_academic_year($id)
-    {
-        $academicYear = Academic_Years::findOrFail($id);
-
-        return response()->json([
-            'status' => true,
-            'data' => $academicYear
-        ]); 
-    }
-
-    public function update_academic_year(Request $request, $id)
-    {
-        $validate = Validator::make($request->all(), [
-            'update_academic_year_name' => 'required|string',
-            'update_start_date' => 'required|date',
-            'update_end_date' => 'required|date',
-            'update_is_active' => 'required',
-        ]);
-
-        if($validate->fails()) {
-            return response()->json([
-                'status'    => false,
-                'message'   => 'Validation Error',
-                'errors'    => $validate->errors()
-            ]);
-        }else{
-            try {
-                $academicYear = Academic_Years::findOrFail($id);
-                $yearName = $request->update_academic_year_name;
-                $startDate = $request->update_start_date;
-                $endDate = $request->update_end_date;
-                
-                $years = explode('/', $yearName);
-                $startYear = $years[0];
-                $endYear = $years[1];
-
-                if( date('Y', strtotime($startDate)) < $startYear || date('Y', strtotime($endDate)) > $endYear) {
-                        // return response()->json([
-                        //     'status' => false,
-                        //     'message' => 'Start and end dates must match the academic year format'
-                        // ]);
-                        Alert::error('Error', 'Start and end dates must match the academic year format');
-                        return redirect()->route('academic_year.index');
-                    }else{
-                        if($startDate > $endDate) {
-                            // return response()->json([
-                            //     'status' => false,
-                            //     'message' => 'Start date must be before end date'
-                            // ]);
-                            Alert::error('Error', 'Start date must be before end date');
-                            return redirect()->route('academic_year.index');
-                        }else{
-                            if($endDate < $startDate){
-                                // return response()->json([
-                                //     'status' => false,
-                                //     'message' => 'End date must be after start date'
-                                // ]);
-                                Alert::error('Error', 'End date must be after start date');
-                                return redirect()->route('academic_year.index');
-                            }else{
-                                $academicYear->update([
-                                    'year_name' => $request->update_academic_year_name,
-                                    'start_date' => $request->update_start_date,
-                                    'end_date' => $request->update_end_date,
-                                    'is_active' => $request->update_is_active,
-                                    'updated_at' => now(),
-                                ]);
-                                // return response()->json([
-                                //     'status' => true,
-                                //     'message' => 'Academic year updated successfully'
-                                // ]);
-                                Alert::success('Success', 'Academic year updated successfully');
-                                return redirect()->route('academic_year.index');
-                            }
-                        }
-                    }
-                
-            } catch (\Exception $e) {
-                // return response()->json([
-                //     'status' => false,
-                //     'message' => 'Error updating academic year: ' . $e->getMessage()
-                // ]);
-                Alert::error('Error', 'Error updating academic year: ' . $e->getMessage());
-                return redirect()->route('academic_year.index');
-            }
-        }
-    }
-
-    public function destroy_academic_year($id)
+    public function setActiveAcademicYear($id)
     {
         try {
-            $academicYear = Academic_Years::findOrFail($id);
-            if($academicYear->is_active) {
-                Alert::error('Error', 'Cannot delete an active academic year. Please deactivate it first.');
+            $academicYear = Academic_Years::where('academic_year_id', $id)->first();
+            if($academicYear) {
+                // Deactivate all other academic years
+                Academic_Years::where('is_active', true)->update(['is_active' => false]);
+                // Activate the selected academic year
+                Academic_Years::where('academic_year_id', $id)->update(['is_active' => true]);
+                Alert::success('Success', 'Academic year activated successfully');
                 return redirect()->route('academic_year.index');
-            }else {
-                $academicYear->delete();
+            }else{
+                Alert::error('Error', 'Academic year not found');
+                return redirect()->route('academic_year.index');
             }
-            Alert::success('Success', 'Academic year deleted successfully');
-            return redirect()->route('academic_year.index');
-        } catch (\Exception $ex) {
-            Alert::error('Error', 'Failed to delete academic year: ' . $ex->getMessage());
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error activating academic year: ' . $e->getMessage());
             return redirect()->route('academic_year.index');
         }
     }
 
-    
+    public function setDeactiveAcademicYear($id){
+        try {
+            $academicYear = Academic_Years::where('academic_year_id', $id)->first();
+            if($academicYear) {
+                // Deactivate the selected academic year
+                Academic_Years::where('academic_year_id', $id)->update(['is_active' => false]);
+                Alert::success('Success', 'Academic year deactivated successfully');
+                return redirect()->route('academic_year.index');
+            }else{
+                Alert::error('Error', 'Academic year not found');
+                return redirect()->route('academic_year.index');
+            }
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error deactivating academic year: ' . $e->getMessage());
+            return redirect()->route('academic_year.index');
+        }
+    }
+
 
     // Semesters
     public function index_semester()

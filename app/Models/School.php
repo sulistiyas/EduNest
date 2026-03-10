@@ -35,6 +35,11 @@ class School extends Model
         return $this->hasMany(User::class, 'school_id', 'school_id');
     }
 
+    public function academicYears()
+    {
+        return $this->hasMany(Academic_Years::class, 'school_id', 'school_id');
+    }
+
     
 
 

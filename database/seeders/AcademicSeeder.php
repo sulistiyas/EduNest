@@ -17,6 +17,7 @@ class AcademicSeeder extends Seeder
 
         for ($i = 2020; $i <= 2030; $i++) {
             $years[] = [
+                'school_id' => 2, // Assuming all academic years belong to the same school
                 'year_name' => $i . '/' . ($i + 1),
                 'start_date' => $i . '-07-01',
                 'end_date' => ($i + 1) . '-06-30',

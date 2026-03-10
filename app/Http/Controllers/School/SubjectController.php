@@ -139,6 +139,7 @@ class SubjectController extends Controller
 
     public function assignTeachersForm()
     {
+        
         $assignedTeachers = DB::table('class_subjects')
             ->join('classes', 'class_subjects.class_id', '=', 'classes.class_id')
             ->join('subjects', 'class_subjects.subject_id', '=', 'subjects.subject_id')
