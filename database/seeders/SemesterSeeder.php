@@ -25,6 +25,7 @@ class SemesterSeeder extends Seeder
                 'semester_name' => 'Semester 1',
                 'start_date' => $year->start_date,
                 'end_date' => date('Y-m-d', strtotime('+5 months', strtotime($year->start_date))),
+                'is_active' => 0,
                 'created_at' => now(),
                 'updated_at' => now()
             ];
@@ -35,6 +36,7 @@ class SemesterSeeder extends Seeder
                 'semester_name' => 'Semester 2',
                 'start_date' => date('Y-m-d', strtotime('+6 months', strtotime($year->start_date))),
                 'end_date' => $year->end_date,
+                'is_active' => 0,
                 'created_at' => now(),
                 'updated_at' => now()
             ];

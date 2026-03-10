@@ -94,7 +94,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('academic_years/edit/{id}',[Academic_SemesterController::class, 'edit_academic_year'])->name('academic_year.edit');
             Route::post('academic_years/update/{id}',[Academic_SemesterController::class, 'update_academic_year'])->name('academic_year.update');
             Route::delete('academic_years/delete/{id}',[Academic_SemesterController::class, 'destroy_academic_year'])->name('academic_year.destroy');
-            
+
+            Route::get('semesters',[Academic_SemesterController::class, 'index_semester'])->name('semester.index');
+            Route::post('semesters/store',[Academic_SemesterController::class, 'store_semester'])->name('semester.store');
+            Route::post('semesters/active/{id}',[Academic_SemesterController::class, 'setActiveSemester'])->name('semester.setActive');
+            Route::post('semesters/deactivate/{id}',[Academic_SemesterController::class, 'setDeactiveSemester'])->name('semester.setDeactive');
             // Enrollment student
             Route::get('enrollment',[EnrollmentController::class, 'index'])->name('enrollment.index');
             Route::post('enrollment/store',[EnrollmentController::class, 'store'])->name('enrollment.store');

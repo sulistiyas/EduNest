@@ -231,12 +231,72 @@ class Academic_SemesterController extends Controller
     
 
     // Semesters
-    public function index_semesters()
+    public function index_semester()
     {
+        $getActiveAcademicYear = Academic_Years::where('is_active', true)->first();
+        $activeAcademicYear = $getActiveAcademicYear ? $getActiveAcademicYear : null;
         $semesters = DB::table('semesters')
-                        ->join('academic_years', 'semesters.academic_year_id', '=', 'academic_years.id')
-                        ->whereNull('semesters.deleted_at')->get();
-        return view('academic_setup.index_semesters', compact('semesters'));
+                        ->join('academic_years', 'semesters.academic_year_id', '=', 'academic_years.academic_year_id')
+                        ->select('semesters.*', 'academic_years.year_name')
+                        // ->where('semesters.academic_year_id', $activeAcademicYear ? $activeAcademicYear->academic_year_id : null)
+                        ->whereNull('semesters.deleted_at')
+                        ->orderBy('academic_years.is_active', 'desc')
+                        ->get();
+        if($activeAcademicYear) {
+            // Alert::info('Active Academic Year', 'The active academic year is : ' . $activeAcademicYear->year_name);
+            return view('academic_setup.index_semesters', compact('semesters', 'activeAcademicYear'));
+        }else{
+            Alert::warning('No Active Academic Year', 'There is currently no active academic year. Please set an active academic year to manage semesters.');
+            return view('academic_setup.index_semesters', compact('semesters', 'activeAcademicYear'));
+        }
+        
+    }
+
+    public function setActiveSemester($id)
+    {
+        try {
+            $semester = DB::table('semesters')->where('semester_id', $id)->first();
+            $getAcademicYear = DB::table('academic_years')->where('academic_year_id', $semester->academic_year_id)->first();
+            if(!$getAcademicYear->is_active) {
+                Alert::error('Error', 'Cannot activate semester. The associated academic year is not active.');
+                return redirect()->route('semester.index');
+            }else{
+                if($semester) {
+                    // Deactivate all other semesters
+                    DB::table('semesters')->where('is_active', true)->update(['is_active' => false]);
+                    // Activate the selected semester
+                    DB::table('semesters')->where('semester_id', $id)->update(['is_active' => true]);
+                    Alert::success('Success', 'Semester activated successfully');
+                    return redirect()->route('semester.index');
+                }else{
+                    Alert::error('Error', 'Semester not found');
+                    return redirect()->route('semester.index');
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error activating semester: ' . $e->getMessage());
+            return redirect()->route('semester.index');
+        }
+    }
+
+    public function setDeactiveSemester($id)
+    {
+        try {
+            $semester = DB::table('semesters')->where('semester_id', $id)->first();
+            if($semester) {
+                // Deactivate the selected semester
+                DB::table('semesters')->where('semester_id', $id)->update(['is_active' => false]);
+                Alert::success('Success', 'Semester deactivated successfully');
+                return redirect()->route('semester.index');
+            }else{
+                Alert::error('Error', 'Semester not found');
+                return redirect()->route('semester.index');
+            }
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error deactivating semester: ' . $e->getMessage());
+            return redirect()->route('semester.index');
+        }
     }
 
     

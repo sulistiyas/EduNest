@@ -58,7 +58,11 @@
                                                     <td>{{ $year->year_name }}</td>
                                                     <td>{{ $year->start_date }}</td>
                                                     <td>{{ $year->end_date }}</td>
-                                                    <td>{{ $year->is_active ? 'Yes' : 'No' }}</td>
+                                                    <td>
+                                                        <span class="{{ $year->is_active ? 'badge bg-success' : 'badge bg-danger' }}" style="cursor:pointer">
+                                                            {{ $year->is_active ? 'Yes' : 'No' }}
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         {{-- <button class="btn btn-sm btn-primary btn-view" data-id="{{ $year->academic_year_id }}" data-toggle="modal" data-target="#modal_academic_year_view">View</button> --}}
                                                         <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $year->academic_year_id }}" data-toggle="modal" data-target="#modal_academic_year_edit">Edit</button>
