@@ -13,7 +13,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 class EnrollmentController extends Controller
 {
     public function index()
-    {
+    {   
+        $getActiveAcademicYear = DB::table('academic_years')
+            ->where('school_id', Auth::user()->school_id)
+            ->where('is_active', '1')
+            ->first();
         $class_enrollments = DB::table('enrollments')
             ->join('classes', 'enrollments.class_id', '=', 'classes.class_id')
             ->join('users', 'enrollments.student_id', '=', 'users.id')
@@ -32,7 +36,7 @@ class EnrollmentController extends Controller
         $student_data = DB::table('users')
             ->where('role_id', '4')
             ->get();
-        return view('class.student_enrollment.index', compact('class_enrollments', 'class_data', 'student_data'));
+        return view('class.student_enrollment.index', compact('getActiveAcademicYear','class_enrollments', 'class_data', 'student_data'));
     }
 
     public function getAvailableStudents($class_id)
@@ -61,6 +65,10 @@ class EnrollmentController extends Controller
 
     public function store(Request $request)
     {
+        $getActiveAcademicYear = DB::table('academic_years')
+            ->where('school_id', Auth::user()->school_id)
+            ->where('is_active', '1')
+            ->first();
         $validate = Validator::make($request->all(), [
             'class_id' => 'required|exists:classes,class_id',
             'student_id' => 'required|exists:users,id',
@@ -77,6 +85,7 @@ class EnrollmentController extends Controller
                     DB::table('enrollments')->insert([
                         'class_id' => $request->class_id,
                         'student_id' => $studentId,
+                        'academic_year_id' => $getActiveAcademicYear->academic_year_id,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);

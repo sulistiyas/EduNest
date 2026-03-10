@@ -37,7 +37,8 @@
                                         @if(Auth::user()->hasRole('super_admin'))
                                             <h3 class="card-title">Assigned Teacher</h3>
                                         @elseif(Auth::user()->hasRole('school_admin'))
-                                            <h3 class="card-title">Assigned Teacher for <strong> {{ Auth::user()->school->name }} </strong></h3>
+                                        <h3 class="card-title">Assigned Teacher for <strong> {{ Auth::user()->school->name }} </strong></h3><br>
+                                        <h3 class="card-title">Active Academic Year : <strong> {{ $activeAcademicYear->year_name }} </strong></h3>
                                         @endif
                                         <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_assignTeacher">
                                             <i class="fas fa-plus">&nbsp;Assign Teacher</i>

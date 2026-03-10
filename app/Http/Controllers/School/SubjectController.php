@@ -139,52 +139,70 @@ class SubjectController extends Controller
 
     public function assignTeachersForm()
     {
+        $getActiveAcademicYear = DB::table('academic_years')
+            ->where('school_id', Auth::user()->school_id)
+            ->where('is_active', '1')
+            ->whereNull('deleted_at')
+            ->first();
+        if(!$getActiveAcademicYear){
+            Alert::error('Error', 'No active academic year found. Please set an active academic year before assigning teachers to subjects.');
+            return redirect()->route('academic_year.index');
+        }else{
+            $assignedTeachers = DB::table('class_subjects')
+                ->join('classes', 'class_subjects.class_id', '=', 'classes.class_id')
+                ->join('subjects', 'class_subjects.subject_id', '=', 'subjects.subject_id')
+                ->join('users', 'class_subjects.teacher_id', '=', 'users.id')
+                ->where('class_subjects.school_id', Auth::user()->school_id)
+                ->where('users.role_id', '3')
+                ->whereNull('class_subjects.deleted_at')
+                ->select(
+                    'class_subjects.*',
+                    'subjects.subject_name',
+                    'users.name as teacher_name',
+                    'classes.name as class_name'
+                )
+                ->get();
+            
+            $grouped = $assignedTeachers
+                ->groupBy(function ($item) {
+                    return $item->teacher_id . '-' . $item->class_id;
+                })
+                ->map(function ($group) use ($getActiveAcademicYear) {
+                    return [
+                        'teacher_id'        => $group->first()->teacher_id,
+                        'class_id'          => $group->first()->class_id,
+                        'teacher_name'      => $group->first()->teacher_name,
+                        'class_name'        => $group->first()->class_name,
+                        'academic_year_id'  => $getActiveAcademicYear->academic_year_id,
+                        'subjects'          => $group->pluck('subject_name')->implode(', '),
+                        'subject_ids'       => $group->pluck('subject_id')->implode(',')
+                    ];
+                });
+
+
+            $subjects = Subject::where('school_id', Auth::user()->school_id)->whereNull('deleted_at')->get();
+            $teachers = DB::table('users')
+                ->where('school_id', Auth::user()->school_id)
+                ->where('role_id', '3') // Assuming role_id '3' corresponds to teachers
+                ->whereNull('deleted_at')
+                ->get();
+            $classes = DB::table('classes')
+                ->where('school_id', Auth::user()->school_id)
+                ->whereNull('deleted_at')
+                ->get();
+            $activeAcademicYear = $getActiveAcademicYear ? $getActiveAcademicYear : null;
+            return view('subject.assign_teachers', compact('activeAcademicYear','grouped','assignedTeachers', 'subjects', 'teachers', 'classes'));
+        }
         
-        $assignedTeachers = DB::table('class_subjects')
-            ->join('classes', 'class_subjects.class_id', '=', 'classes.class_id')
-            ->join('subjects', 'class_subjects.subject_id', '=', 'subjects.subject_id')
-            ->join('users', 'class_subjects.teacher_id', '=', 'users.id')
-            ->where('class_subjects.school_id', Auth::user()->school_id)
-            ->where('users.role_id', '3')
-            ->whereNull('class_subjects.deleted_at')
-            ->select(
-                'class_subjects.*',
-                'subjects.subject_name',
-                'users.name as teacher_name',
-                'classes.name as class_name'
-            )
-            ->get();
-        $grouped = $assignedTeachers
-            ->groupBy(function ($item) {
-                return $item->teacher_id . '-' . $item->class_id;
-            })
-            ->map(function ($group) {
-                return [
-                    'teacher_id'   => $group->first()->teacher_id,
-                    'class_id'     => $group->first()->class_id,
-                    'teacher_name' => $group->first()->teacher_name,
-                    'class_name'   => $group->first()->class_name,
-                    'subjects'     => $group->pluck('subject_name')->implode(', '),
-                    'subject_ids'  => $group->pluck('subject_id')->implode(',')
-                ];
-            });
-
-
-        $subjects = Subject::where('school_id', Auth::user()->school_id)->whereNull('deleted_at')->get();
-        $teachers = DB::table('users')
-            ->where('school_id', Auth::user()->school_id)
-            ->where('role_id', '3') // Assuming role_id '3' corresponds to teachers
-            ->whereNull('deleted_at')
-            ->get();
-        $classes = DB::table('classes')
-            ->where('school_id', Auth::user()->school_id)
-            ->whereNull('deleted_at')
-            ->get();
-        return view('subject.assign_teachers', compact('grouped','assignedTeachers', 'subjects', 'teachers', 'classes'));
     }
 
     public function assignTeachers(Request $request)
-    {
+    {   
+        $getActiveAcademicYear = DB::table('academic_years')
+            ->where('school_id', Auth::user()->school_id)
+            ->where('is_active', '1')
+            ->whereNull('deleted_at')
+            ->first();
         $validator = Validator::make($request->all(), [
             'teacher_id' => 'required|exists:users,id',
             'class_id' => 'required|exists:classes,class_id',
@@ -204,6 +222,7 @@ class SubjectController extends Controller
                         'teacher_id' => $request->teacher_id,
                         'class_id'   => $request->class_id,
                         'school_id'  => Auth::user()->school_id,
+                        'academic_year_id' => $getActiveAcademicYear->academic_year_id,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -213,7 +232,7 @@ class SubjectController extends Controller
                 //     'message' => 'Teacher assigned to subject successfully'
                 // ]);
                 Alert::success('Success', 'Teacher assigned to subject successfully');
-                return redirect()->route('subject.assignTeachersForm');
+                return redirect()->route('subject_teachers.assignTeachersForm');
             } catch (\Exception $e) {
                 return response()->json([
                 'status' => false,
@@ -252,7 +271,7 @@ class SubjectController extends Controller
                 'message' => 'Assignment Updated'
             ]);
             Alert::success('Success', 'Teacher assignment updated successfully');
-            return redirect()->route('subject.assignTeachersForm');
+            return redirect()->route('subject_teachers.assignTeachersForm');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,

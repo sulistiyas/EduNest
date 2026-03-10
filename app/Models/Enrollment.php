@@ -13,6 +13,7 @@ class Enrollment extends Model
     protected $table = 'enrollments';
 
     protected $fillable = [
+        'academic_year_id',
         'student_id',
         'class_id',
     ];

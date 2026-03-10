@@ -34,7 +34,8 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">Class List for <strong> {{ Auth::user()->school->name }} </strong></h3>
+                                        <h3 class="card-title">Class List for <strong> {{ Auth::user()->school->name }} </strong></h3><br>
+                                        <h3 class="card-title">Active Academic Year : <strong> {{ $getActiveAcademicYear->year_name }} </strong></h3>
                                         <button type="button" class="float-sm-right btn btn-primary" data-toggle="modal" data-target="#modal_enrollment">
                                             <i class="fas fa-plus">&nbsp;Enroll Student</i>
                                         </button>
