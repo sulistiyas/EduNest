@@ -21,7 +21,7 @@ class EnrollmentController extends Controller
         $class_enrollments = DB::table('enrollments')
             ->join('classes', 'enrollments.class_id', '=', 'classes.class_id')
             ->join('users', 'enrollments.student_id', '=', 'users.id')
-            // ->where('enrollments.school_id', Auth::user()->school_id)
+            ->where('enrollments.academic_year_id', $getActiveAcademicYear->academic_year_id)
             ->select(
                 'classes.class_id',
                 'classes.name as class_name',

@@ -61,6 +61,9 @@ class Class_Subject extends Model
     }
 
     
-
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'class_subject_id', 'class_subject_id');
+    }
 
 }

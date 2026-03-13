@@ -84,8 +84,8 @@
               </li>
             </ul>
         </li>
-        <li class="nav-item menu">
-            <a href="#" class="nav-link">
+        <li class="{{ Request::routeIs('schedule.*') ? 'nav-item menu-open' : 'nav-item menu'}}">
+            <a href="#" class="{{ Request::routeIs('schedule.*') ? 'nav-link active' : 'nav-link' }}">
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Schedule Management
@@ -94,7 +94,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('schedule.index') }}" class="{{ Request::routeIs('schedule.index') ? 'nav-link active' : 'nav-link' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Class Schedule</p>
                 </a>

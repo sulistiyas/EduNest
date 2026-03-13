@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RolesController;
+use App\Http\Controllers\School\Academic_SemesterController;
 use App\Http\Controllers\School\ClassController;
 use App\Http\Controllers\School\EnrollmentController;
+use App\Http\Controllers\School\SchedulerController;
 use App\Http\Controllers\School\SubjectController;
 use App\Http\Controllers\School\UserController;
 use App\Http\Controllers\SchoolController;
-use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Teacher\ClassController as TeacherClassController;
-use App\Http\Controllers\School\Academic_SemesterController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login_form'])->name('login');
@@ -105,6 +106,12 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('enrollment/delete/{id}',[EnrollmentController::class, 'destroy'])->name('enrollment.destroy'); 
             // Get Student Available for Enrollment
             Route::get('enrollment/students/{class_id}', [EnrollmentController::class, 'getAvailableStudents'])->name('getAvailableStudents');
+
+            // Scheduler Routes
+            Route::get('schedule', [SchedulerController::class, 'index'])->name('schedule.index');
+            Route::post('schedule/store', [SchedulerController::class, 'store'])->name('schedule.store');
+            Route::delete('schedule/delete/{id}', [SchedulerController::class, 'destroy'])->name('schedule.destroy');
+
 
         });
 

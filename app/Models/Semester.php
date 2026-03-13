@@ -22,5 +22,10 @@ class Semester extends Model
         return $this->hasMany(Grade::class, 'semester_id', 'semester_id');
     }
 
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'semester_id', 'semester_id');
+    }
+
     
 }
